@@ -6,7 +6,7 @@ const rootDir = __dirname;
 const uploadDir = path.join(rootDir, "uploads");
 const metadataPath = path.join(uploadDir, "installer.json");
 const port = Number(process.env.PORT || 4173);
-const host = process.env.HOST || "127.0.0.1";
+const host = process.env.HOST || "0.0.0.0";
 const maxUploadBytes = 1024 * 1024 * 500;
 
 const ownerCredentials = {
