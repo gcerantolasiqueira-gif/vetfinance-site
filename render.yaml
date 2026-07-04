@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: vetfinance-site
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: OWNER_USER
+        value: guigcs
+      - key: OWNER_PASSWORD
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: GITHUB_OWNER
+        sync: false
+      - key: GITHUB_REPO
+        sync: false
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: GITHUB_RELEASE_TAG
+        value: vetfinance-installer

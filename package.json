@@ -1,0 +1,12 @@
+{
+  "name": "vetfinance-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site do VetFinance com upload e download do instalador.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

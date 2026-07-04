@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VetFinance</title>
+    <meta
+      name="description"
+      content="VetFinance: sistema de gestão veterinária completo, intuitivo e integrado."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar" aria-label="Navegação principal">
+      <a class="brand" href="#inicio" aria-label="Início">
+        <img src="assets/vetfinance-icon.png" alt="" />
+        <span>
+          <strong>VetFinance</strong>
+          <small>Sistema de gestão veterinária</small>
+        </span>
+      </a>
+
+      <nav class="nav-links" aria-label="Seções do site">
+        <a href="#vetfinance">VetFinance</a>
+        <a href="#dono">Dono</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="inicio">
+        <img
+          class="hero-image"
+          src="assets/hero-software-lab.png"
+          alt="Ambiente futurista com interfaces de software"
+        />
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+          <p class="eyebrow">Gestão veterinária</p>
+          <h1>VetFinance</h1>
+          <p class="hero-copy">
+            Sistema de gestão veterinária completo, intuitivo e integrado,
+            desenvolvido para clínicas e veterinários autônomos.
+          </p>
+        </div>
+
+        <aside class="download-corner" aria-label="Download do VetFinance">
+          <img src="assets/vetfinance-icon.png" alt="Ícone do VetFinance" />
+          <div>
+            <p class="eyebrow">Programa disponível</p>
+            <h2>VetFinance</h2>
+            <p>
+              Atendimento, prontuário eletrônico, exames, vacinação, orçamento,
+              materiais, financeiro e histórico do paciente em uma única plataforma.
+            </p>
+            <a class="button primary download-link" href="#" aria-disabled="true">Baixar VetFinance</a>
+          </div>
+        </aside>
+      </section>
+
+      <section class="product-section" id="vetfinance">
+        <div class="section-heading">
+          <p class="eyebrow">Programa</p>
+          <h2>VetFinance</h2>
+          <p>
+            Sistema de gestão veterinária completo, intuitivo e integrado,
+            desenvolvido para clínicas e veterinários autônomos, reunindo
+            atendimento, prontuário eletrônico, exames, vacinação, orçamento,
+            materiais, financeiro e histórico do paciente em uma única plataforma.
+          </p>
+        </div>
+
+        <article class="software-card featured-card">
+          <img src="assets/vetfinance-icon.png" alt="Ícone do VetFinance" />
+          <div>
+            <span class="category-badge">Veterinário</span>
+            <h3>VetFinance</h3>
+            <p>
+              Atendimento, prontuário eletrônico, exames, vacinação, orçamento,
+              materiais, financeiro e histórico do paciente em uma única plataforma.
+            </p>
+            <a class="button ghost download-link" href="#" aria-disabled="true">Baixar VetFinance</a>
+          </div>
+        </article>
+      </section>
+
+      <section class="owner-section" id="dono">
+        <div class="section-heading compact">
+          <p class="eyebrow">Conta do dono</p>
+          <h2>Área reservada</h2>
+          <p>Entre com a conta do dono para selecionar o instalador executável do VetFinance.</p>
+        </div>
+
+        <div class="owner-grid">
+          <form class="owner-panel owner-login" id="ownerLogin">
+            <h3>Login do dono</h3>
+            <label>
+              Usuário
+              <input id="ownerUser" autocomplete="username" required />
+            </label>
+            <label>
+              Senha
+              <input id="ownerPassword" type="password" autocomplete="current-password" required />
+            </label>
+            <button class="button primary" type="submit">Entrar</button>
+            <p class="form-message" id="loginMessage"></p>
+          </form>
+
+          <form class="owner-panel installer-form hidden" id="installerForm">
+            <div class="owner-panel-head">
+              <div>
+                <h3>Instalador do VetFinance</h3>
+                <p>Busque no computador e selecione o instalador que será salvo no site.</p>
+              </div>
+              <button class="button ghost compact-button" type="button" id="logoutButton">Sair</button>
+            </div>
+
+            <label>
+              Arquivo do instalador
+              <span class="file-picker">
+                <input
+                  id="installerFile"
+                  type="file"
+                  accept=".exe,.msi,.zip,application/x-msdownload,application/x-msi,application/zip"
+                  required
+                />
+                <span>Buscar instalador</span>
+              </span>
+            </label>
+
+            <p class="selected-file" id="selectedFile">Nenhum instalador selecionado.</p>
+            <button class="button primary" type="submit">Subir e liberar download</button>
+            <p class="form-message" id="installerMessage"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <strong>VetFinance</strong>
+      <span>Sistema de gestão veterinária.</span>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
