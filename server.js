@@ -364,7 +364,7 @@ async function handleUpload(request, response) {
   }
 }
 
-async function serveDownload(response) {
+async function serveDownload(request, response) {
   const metadata = await getCurrentInstallerMetadata();
 
   if (!metadata) {
@@ -384,6 +384,11 @@ async function serveDownload(response) {
     "Content-Disposition": `attachment; filename="${metadata.fileName.replace(/"/g, "")}"`,
     "Content-Length": metadata.size,
   });
+
+  if (request.method === "HEAD") {
+    response.end();
+    return;
+  }
 
   fs.createReadStream(metadata.path).pipe(response);
 }
@@ -444,8 +449,8 @@ const server = http.createServer((request, response) => {
     return;
   }
 
-  if (request.method === "GET" && requestUrl.pathname === "/download") {
-    serveDownload(response);
+  if ((request.method === "GET" || request.method === "HEAD") && requestUrl.pathname === "/download") {
+    serveDownload(request, response);
     return;
   }
 
