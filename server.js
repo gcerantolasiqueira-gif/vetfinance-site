@@ -17,8 +17,8 @@ const ownerCredentials = {
 const sessionSecret = process.env.SESSION_SECRET || "vetfinance-local-session";
 const githubStorage = {
   token: process.env.GITHUB_TOKEN || "",
-  owner: process.env.GITHUB_OWNER || "",
-  repo: process.env.GITHUB_REPO || "",
+  owner: process.env.GITHUB_OWNER || "gcerantolasiqueira-gif",
+  repo: process.env.GITHUB_REPO || "vetfinance-site",
   tag: process.env.GITHUB_RELEASE_TAG || "vetfinance-installer",
 };
 
@@ -157,6 +157,10 @@ function getInstallerMetadata() {
 
   try {
     const metadata = JSON.parse(fs.readFileSync(metadataPath, "utf8"));
+    if (metadata.provider === "github" && metadata.downloadUrl) {
+      return metadata;
+    }
+
     const installerPath = path.join(uploadDir, metadata.storedName || "");
     if (!fs.existsSync(installerPath)) return null;
     return { ...metadata, path: installerPath };
@@ -166,19 +170,57 @@ function getInstallerMetadata() {
 }
 
 function isGithubStorageConfigured() {
+  return Boolean(githubStorage.owner && githubStorage.repo);
+}
+
+function isGithubWriteConfigured() {
   return Boolean(githubStorage.token && githubStorage.owner && githubStorage.repo);
 }
 
 function githubRequest(pathname, options = {}) {
   const headers = {
     Accept: "application/vnd.github+json",
-    Authorization: `Bearer ${githubStorage.token}`,
     "User-Agent": "VetFinance-Site",
     "X-GitHub-Api-Version": "2022-11-28",
     ...(options.headers || {}),
   };
 
+  if (githubStorage.token) {
+    headers.Authorization = `Bearer ${githubStorage.token}`;
+  }
+
   return fetch(`https://api.github.com${pathname}`, { ...options, headers });
+}
+
+function isInstallerAsset(asset) {
+  return /^VetFinance.*\.(exe|msi|zip)$/i.test(asset.name || "");
+}
+
+async function getGithubInstallerMetadata() {
+  if (!isGithubStorageConfigured()) return null;
+
+  try {
+    const releasePath = `/repos/${githubStorage.owner}/${githubStorage.repo}/releases/tags/${encodeURIComponent(githubStorage.tag)}`;
+    const response = await githubRequest(releasePath);
+    if (!response.ok) return null;
+
+    const release = await response.json();
+    const assets = Array.isArray(release.assets) ? release.assets.filter(isInstallerAsset) : [];
+    if (!assets.length) return null;
+
+    assets.sort((a, b) => new Date(b.updated_at || b.created_at || 0) - new Date(a.updated_at || a.created_at || 0));
+    const asset = assets[0];
+
+    return {
+      provider: "github",
+      fileName: asset.name,
+      size: asset.size,
+      uploadedAt: asset.updated_at || asset.created_at || release.published_at || release.created_at,
+      downloadUrl: asset.browser_download_url,
+    };
+  } catch {
+    return null;
+  }
 }
 
 async function getOrCreateRelease() {
@@ -243,8 +285,12 @@ async function uploadInstallerToGithub(fileName, data) {
   };
 }
 
-function serveInstallerStatus(response) {
-  const metadata = getInstallerMetadata();
+async function getCurrentInstallerMetadata() {
+  return getInstallerMetadata() || (await getGithubInstallerMetadata());
+}
+
+async function serveInstallerStatus(response) {
+  const metadata = await getCurrentInstallerMetadata();
 
   if (!metadata) {
     sendJson(response, 200, { available: false });
@@ -286,7 +332,7 @@ async function handleUpload(request, response) {
 
     const safeName = sanitizeInstallerName(installer.fileName);
 
-    if (isGithubStorageConfigured()) {
+    if (isGithubWriteConfigured()) {
       const metadata = await uploadInstallerToGithub(safeName, installer.data);
       fs.writeFileSync(metadataPath, JSON.stringify(metadata, null, 2));
       sendJson(response, 200, { available: true, ...metadata });
@@ -318,8 +364,8 @@ async function handleUpload(request, response) {
   }
 }
 
-function serveDownload(response) {
-  const metadata = getInstallerMetadata();
+async function serveDownload(response) {
+  const metadata = await getCurrentInstallerMetadata();
 
   if (!metadata) {
     response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
